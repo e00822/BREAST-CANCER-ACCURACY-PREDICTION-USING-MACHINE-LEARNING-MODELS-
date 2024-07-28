@@ -1,0 +1,225 @@
+Source code 
+
+#Data Pre-processing & Correlation Heatmap Process 
+import numpy as np 
+import pandas as pd 
+import seaborn as sns 
+import matplotlib.pyplot as plt 
+data = pd.read_csv("/content/METABRIC_RNA_Mutation.csv") 
+X = data.iloc[:, 28:517].values   
+y = data.iloc[:, 4].values   
+from sklearn.preprocessing import LabelEncoder label_encoder_y= LabelEncoder() 
+y= label_encoder_y.fit_transform(y) 
+
+#Correlation Heatmap for Gene Expression Profiles 
+df = pd.DataFrame(X, columns=data.columns[28:517]) 
+df['cancer_type_detailed'] = y correlation_matrix = df.corr() 
+plt.figure(figsize=(20, 24.5)) 
+sns.heatmap(correlation_matrix, annot=False, cmap='coolwarm', fmt='.2f', linewidths=0.5) 
+plt.title('Correlation Heatmap for Gene Expression Profiles', fontsize=16) plt.show() 
+  
+#Correlation Heatmap for Gene Expression Profiles 
+correlation_with_target 	= correlation_matrix['cancer_type_detailed'].abs().sort_values(ascending=False) 
+selected_features = correlation_with_target[1:] 
+correlation_threshold = 0.15 
+selected_features 	= 	selected_features[selected_features 	> correlation_threshold] print(selected_features) 
+  
+#Correlation Heatmap for Clinical Features import numpy as np import pandas as pd 
+import seaborn as sns
+import matplotlib.pyplot as plt from sklearn.datasets 
+import load_breast_cancer data = pd.read_csv("/content/METABRIC_RNA_Mutation.csv") 
+X= data.loc[:, "cellularity":"death_from_cancer"] 
+y = data.iloc[:, 4].values 
+columns_to_encode = X.columns[:len(X.columns)] 
+label_encoder = LabelEncoder() 
+ for column in columns_to_encode: 
+    X[column] = label_encoder.fit_transform(X[column]) 
+from sklearn.preprocessing import LabelEncoder 
+label_encoder_y= LabelEncoder()
+y= label_encoder_y.fit_transform(y) 
+df = pd.DataFrame(X, columns=data.columns[:28]) 
+df['cancer_type_detailed'] = y 
+correlation_matrix = df.corr() 
+plt.figure(figsize=(28, 28)) 
+sns.heatmap(correlation_matrix, 	annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5) 
+plt.title('Correlation Heatmap for Clinical Features', fontsize=16) 
+plt.show() 
+  
+correlation_with_target 	= correlation_matrix['cancer_type_detailed'].abs().sort_values(ascending=False) 
+selected_clinical_features 	= correlation_with_target.drop('cancer_type_detailed').index 
+correlation_with_target 	= correlation_matrix['cancer_type_detailed'].abs().sort_values(ascending=False) 
+selected_features = correlation_with_target[1:]   correlation_threshold = 0.1 
+selected_features 	= 	selected_features[selected_features 	> correlation_threshold] selected_features 
+  
+#Data Pre-Processing & Mechine learning models import numpy as np import pandas as pd 
+from sklearn.model_selection 
+import train_test_split from sklearn.preprocessing 
+import StandardScaler from sklearn.svm import SVC 
+from 	sklearn.metrics 	import 	accuracy_score, 	classification_report, confusion_matrix 
+y= data[['cancer_type_detailed']] 
+	X= 	data[['oncotree_code' 
+,'tumor_other_histologic_subtype','neoplasm_histologic_grade' 
+,'er_status_measured_by_ihc','er_status','her2_status_measured_by_snp6', 
+'chemotherapy' 
+,'her2_status','nottingham_prognostic_index','pr_status','aurka','ccne1','cdc25a
+','chek1','e2f2','src','ahnak','aph1b','gata3','bcl2' ,'slc19a1','lfng', 
+         'cdk1','fancd2','gsk3b','lama2' ,'cdh1','tgfb3']] 
+columns_to_encode = X.columns[:len(X.columns)] 
+label_encoder = LabelEncoder() 
+for column in columns_to_encode: 
+    X[column] = label_encoder.fit_transform(X[column]) 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) scaler = StandardScaler() 
+X_train_std = scaler.fit_transform(X_train) 
+X_test_std = scaler.transform(X_test) 
+5.2.1 KNeighbor (K-NN) 
+from sklearn.neighbors import KNeighborsClassifier 
+classifier= KNeighborsClassifier(n_neighbors=5, metric='minkowski', p=2 ) 
+classifier.fit(X_train, y_train)
+y_pred= classifier.predict(X_test) 
+cm= confusion_matrix(y_test, y_pred)
+K = accuracy_score(y_test, y_pred) 
+classification_rep = classification_report(y_test, y_pred) 
+print("Accuracy:", K ) 
+print("Confusion Matrix:\n", cm) 
+print("Classification Report:\n", classification_rep) 
+ 
+#Support Vector Machine (SVM) 
+svm_model = SVC(kernel='linear', random_state=42) 
+svm_model.fit(X_train_std, y_train)
+y_pred = svm_model.predict(X_test_std
+accuracy = accuracy_score(y_test, y_pred) 
+confusion = confusion_matrix(y_test, y_pred) 
+classification_rep = classification_report(y_test, y_pred) 
+
+print("Accuracy:", accuracy) 
+print("Confusion Matrix:\n", confusion) 
+print("Classification Report:\n", classification_rep) 
+
+ 
+ 
+ 
+#Decision Tree 
+
+from sklearn.tree import DecisionTreeClassifier 
+classifier= DecisionTreeClassifier(criterion='entropy', random_state=0) 
+classifier.fit(X_train, y_train)
+y_pred= classifier.predict(X_test) 
+cm= confusion_matrix(y_test, y_pred) 
+d = accuracy_score(y_test, y_pred) 
+classification_rep = classification_report(y_test, y_pred) 
+print("Accuracy:", d ) 
+print("Confusion Matrix:\n", cm) 
+print("Classification Report:\n", classification_rep) 
+  
+Figure 27:Accuracy Score, Confusion Matrix and Classification Report for Decision Tree 
+5.2.4 Random Forest from sklearn.ensemble import RandomForestClassifier classifier= RandomForestClassifier(n_estimators= 10, criterion="entropy") classifier.fit(X_train, y_train)#Predicting the test set result y_pred= classifier.predict(X_test) cm= confusion_matrix(y_test, y_pred) r= accuracy_score(y_test, y_pred) classification_rep = classification_report(y_test, y_pred) print("Accuracy:", r ) print("Confusion Matrix:\n", cm) print("Classification Report:\n", classification_rep) 
+  
+Figure 28:Accuracy Score, Confusion Matrix and Classification Report for Random Forest 
+ 
+#Different ensemble models 
+#Gradient Boosting 
+
+from sklearn.ensemble import GradientBoostingClassifier 
+gradient_boosting_model 	= 	GradientBoostingClassifier(n_estimators=100, random_state=42) 
+gradient_boosting_model.fit(X_train_std, y_train) 
+y_pred = gradient_boosting_model.predict(X_test)
+g = accuracy_score(y_test, y_pred) 
+confusion = confusion_matrix(y_test, y_pred) 
+classification_rep = classification_report(y_test, y_pred) 
+print("Accuracy:", g) 
+print("Confusion Matrix:\n", confusion) 
+print("Classification Report:\n", classification_rep) 
+  
+#Stacking Classifier 
+	from 	sklearn.ensemble 	import 	RandomForestClassifier, 
+GradientBoostingClassifier
+from sklearn.svm import SVC 
+from sklearn.ensemble import StackingClassifier 
+from sklearn.linear_model import LogisticRegression 
+from sklearn.model_selection import cross_val_predict 
+random_forest = RandomForestClassifier(random_state=42) 
+svm = SVC(probability=True, random_state=42) 
+logistic_regression = LogisticRegression(random_state=42) 
+stacked_model = StackingClassifier( 
+    estimators=[('rf', random_forest), ('svm', svm), ('lr', logistic_regression)],     final_estimator=LogisticRegression(),   
+) 
+stacked_model.fit(X_train, y_train) 
+y_pred_stacked = stacked_model.predict(X_test) 
+st = accuracy_score(y_test, y_pred_stacked) 
+confusion = confusion_matrix(y_test, y_pred_stacked) 
+classification_rep = classification_report(y_test, y_pred_stacked) 
+print("Accuracy:", st) 
+print("Confusion Matrix:\n", confusion) 
+print("Classification Report:\n", classification_rep) 
+  
+ 
+#Voting classifier 
+from sklearn.ensemble import VotingClassifier 
+# Initialize the base models
+model1 = DecisionTreeClassifier() 
+model2 = LogisticRegression() 
+model3 = SVC(probability=True) 
+model4 = GaussianNB() 
+model5 = KNeighborsClassifier() 
+model6 = RandomForestClassifier() 
+ensemble_model = VotingClassifier(     estimators=[ 
+        ('dt', model1), 
+        ('lr', model2), 
+        ('svc', model3), 
+        ('gnb', model4), 
+        ('knn', model5), 
+        ('rf', model6) 
+    ], 
+    voting='hard'   
+) 
+ensemble_model.fit(X_train, y_train)
+y_pred = ensemble_model.predict(X_test) 
+print("-------------------------------------------------------------------voting model------------
+------------------------------------------------------------") 
+e = accuracy_score(y_test, y_pred) 
+
+confusion = confusion_matrix(y_test, y_pred) 
+classification_rep = classification_report(y_test, y_pred) 
+print("Accuracy:", e) 
+print("Confusion Matrix:\n", confusion) 
+print("Classification Report:\n", classification_rep) 
+  
+ 
+print("----------------------------------------------------------------Averaging model---------
+---------------------------------------------------------------") 
+averaging_model = VotingClassifier(     estimators=[ 
+        ('dt', model1), 
+        ('lr', model2), 
+        ('svc', model3), 
+        ('gnb', model4), 
+        ('knn', model5), 
+        ('rf', model6) 
+    ], 
+    voting='soft'   
+) 
+averaging_model.fit(X_train, y_train) 
+y_pred = averaging_model.predict(X_test) 
+a = accuracy_score(y_test, y_pred) 
+confusion = confusion_matrix(y_test, y_pred) 
+classification_rep = classification_report(y_test, y_pred)
+print("Accuracy:", a) 
+print("Confusion Matrix:\n", confusion) 
+print("Classification Report:\n", classification_rep) 
+  
+
+Result   
+Machine Learning models Results 
+S.no 	Machine Learning models 	Accuracy score 
+1 	K-NN classifier 	0.7569444444444444 
+2 	Support Vector Machine 	0.9965277777777778 
+3 	Decision Tree 	0.86 
+4 	Random Forest 	0.9930555555555556 
+ 
+Different ensemble models Results 
+S.no 	Ensemble Models 	Accuracy score 
+1 	Gradient Boosting 	0.798611111111111 
+2 	Stacking Classifier 	0.9965277777777778 
+	Voting classifier 	
+3 	Voting model 	0.8125 
+4 	Averaging model 	0.9895833333333334 
+ 
